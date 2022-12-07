@@ -9,10 +9,10 @@ import javax.lang.model.element.Element
 object GraphsGenerator {
     fun generateDependencyProviderClass(graph: Graph): TypeSpec {
         println("graph type = ${graph.selfElement.enclosingElement.simpleName}")
-        /*return TypeSpec.interfaceBuilder("${graph.name}_Graph")
-            .addSuperinterface(graph.selfElement.asType().asTypeName())
-            .build()*/
-        val a = TypeSpec.classBuilder("${graph.name}_Graph")
+        return TypeSpec.interfaceBuilder("${graph.name}_Generated")
+            .addSuperinterface(graph.type.asTypeName())
+            .build()
+        /*val a = TypeSpec.classBuilder("${graph.name}_Graph")
             .addSuperinterface(graph.selfElement.asType().asTypeName())
         for (i in graph.functionsElements.indices){
             a.addFunction(
@@ -23,7 +23,7 @@ object GraphsGenerator {
                     .build()
             )
         }
-        return a.build()
+        return a.build()*/
 
     }
     fun createArgsString(dependencies: List<Element>): String {

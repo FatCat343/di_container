@@ -8,10 +8,10 @@ data class Graph(
     val functionsElements: List<Function>,
 ) {
     val type: TypeMirror
-        get() = selfElement.enclosingElement.asType()
+        get() = selfElement.asType()
 
     val name: String
-        get() = selfElement.enclosingElement.simpleName.toString()
+        get() = selfElement.simpleName.toString()
 }
 data class Function(
     val selfElement: Element,

@@ -23,7 +23,7 @@ class DIElementAnnotationProcessor : AbstractProcessor() {
         val dependencies = roundEnv.getElementsAnnotatedWith(DIElement::class.java)
             .filter { it.kind == ElementKind.CONSTRUCTOR }
             .map { buildDependencyMeta(it) }
-        println(dependencies.map { "${it.selfElement.simpleName} + ${it.dependenciesElements.forEach { a -> a.simpleName }}" })
+        println("process:" +dependencies.map { "${it.selfElement.simpleName} + ${it.dependenciesElements.forEach { a -> a.simpleName }}" })
         generateDependencyProviders(dependencies)
 
         val isGraphProcessed = graphProcess(annotations,roundEnv)
@@ -36,7 +36,7 @@ class DIElementAnnotationProcessor : AbstractProcessor() {
         val graphs = roundEnv.getElementsAnnotatedWith(DIGraph::class.java)
             .filter { it.kind == ElementKind.INTERFACE }
             .map { buildGraphMeta(it) }
-        println(graphs.map { "${it.selfElement.simpleName}" })
+        println("graph process:" + graphs.map { "${it.selfElement.simpleName}" })
         generateGraphProviders(graphs)
         return true
     }
@@ -52,7 +52,7 @@ class DIElementAnnotationProcessor : AbstractProcessor() {
 
         val result = Dependency(typeElement, dependencies)
 
-        println(result)
+        println("dependency info:" + result)
 
         return result
     }
@@ -65,7 +65,6 @@ class DIElementAnnotationProcessor : AbstractProcessor() {
             //functions.add(Function(elements[i],elements[i].enclosingElement))
         }
         val result = Graph(typeElement, functions)
-
         println("graph info:"+result)
 
         return result
