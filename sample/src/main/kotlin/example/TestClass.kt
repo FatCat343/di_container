@@ -1,15 +1,9 @@
 package example
 
-import di.DependencyProvider
+import graphs.CarGraph_Graph
 
-class TestClass {
-    fun test() {
-        val int: DependencyProvider<Car> = Car_DependencyProvider(Engine(),Wheel())
-        int.get()
-    }
-
-}
 fun main(args: Array<String>) {
-    val int: DependencyProvider<Car> = Car_DependencyProvider(Engine(),Wheel())
-    int.get()
+    val graph: CarGraph = CarGraph_Graph()
+    val int = graph.getcar()
+    println()
 }

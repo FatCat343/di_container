@@ -12,7 +12,11 @@ class Car @DIElement constructor(
 
 class Engine @DIElement constructor()
 
-class Wheel @DIElement constructor()
+class Wheel constructor()
+
+class Garage @DIElement constructor(
+    car: Car
+)
 
 @DIGraph
 interface CarGraph{

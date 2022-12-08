@@ -32,15 +32,29 @@ object GraphGenerator {
 
     private fun TypeSpec.Builder.introduceProviderParameters(graph: Graph): TypeSpec.Builder {
         val noArgsDeps = graph.dependencies.filter { it.dependenciesElements.isEmpty() }
-        val argsDeps = graph.dependencies - noArgsDeps.toSet()
-
-        //TODO: продумать алгоритм инициализации провайдеров
+        val argsDeps = (graph.dependencies - noArgsDeps.toSet()).toMutableList()
 
         noArgsDeps.forEach { this.introduceProviderParameter(it, graph) }
 
-        argsDeps.forEach { this.introduceProviderParameter(it, graph) }
+        val generatedDeps = noArgsDeps.toMutableList()
+
+        var newProviderPerLoop = 0
+
+        do {
+            val depsToGenerate = argsDeps.filter { it.isAllArgumentsIn(generatedDeps) }
+            argsDeps.removeIf { it.isAllArgumentsIn(generatedDeps) }
+            newProviderPerLoop = depsToGenerate.size
+            depsToGenerate.forEach { this.introduceProviderParameter(it, graph) }
+            generatedDeps.addAll(depsToGenerate)
+        } while (newProviderPerLoop >= 1)
 
         return this
+    }
+
+    private fun Dependency.isAllArgumentsIn(dependencies: List<Dependency>): Boolean {
+        val dependantTypes = this.dependenciesElements.map { it.asType().asTypeName() }
+        val availableTypes = dependencies.map { it.type.asTypeName() }
+        return availableTypes.containsAll(dependantTypes)
     }
 
     private fun TypeSpec.Builder.introduceProviderParameter(dependency: Dependency, graph: Graph): TypeSpec.Builder {
@@ -53,10 +67,6 @@ object GraphGenerator {
             .initializer("%T(${argNames.joinToString(separator = ", ") { "${it}.get()" } })", providerClassName)
             .build()
         return this.addProperty(propertySpec)
-    }
-
-    private fun createArgsString(dependencies: List<Element>): String {
-        return dependencies.joinToString(separator = ", ") { it.simpleName }
     }
 
     private fun Graph.getDependencyForType(type: TypeMirror): Dependency {
