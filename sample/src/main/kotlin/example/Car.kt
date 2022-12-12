@@ -12,7 +12,8 @@ class Car @DIElement constructor(
 
 class Engine @DIElement constructor()
 
-class Wheel constructor()
+
+class Wheel @DIElement constructor()
 
 class Garage @DIElement constructor(
     car: Car
